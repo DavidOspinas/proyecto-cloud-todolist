@@ -216,7 +216,7 @@
 
     async function loadTasks() {
       try {
-        const res = await fetch("https://todo-api-david.onrender.com");
+        const res = await fetch(API_URL);
         const data = await res.json();
         renderTasks(data);
         setStatus(`Conectado al servicio /tasks`, 'ok');
@@ -275,7 +275,7 @@
       const text = taskInput.value.trim();
       if (!text) return;
       try {
-        const res = await fetch("https://todo-api-david.onrender.com", {
+        const res = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text, completed: false })
@@ -292,7 +292,7 @@
 
     async function toggleTask(id, completed) {
       try {
-        const res = await fetch(`${"https://todo-api-david.onrender.com"}/${id}`, {
+        const res = await fetch(`${API_URL}/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: 'placeholder', completed })
@@ -308,7 +308,7 @@
 
     async function deleteTask(id) {
       try {
-        await fetch(`${"https://todo-api-david.onrender.com"}/${id}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
         await loadTasks();
         setStatus('Tarea eliminada', 'ok');
       } catch (err) {
