@@ -1,11 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>To-Do List – Proyecto Cloud</title>
+
   <style>
     * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    body { margin: 0; background: #0f172a; color: #e5e7eb; display: flex; justify-content: center; padding: 40px 16px; }
+
+    body {
+      margin: 0;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
     .app-container {
       width: 100%;
       max-width: 600px;
@@ -15,16 +25,19 @@
       box-shadow: 0 20px 40px rgba(15, 23, 42, 0.8);
       border: 1px solid #1e293b;
     }
+
     h1 {
       margin: 0 0 4px;
       font-size: 1.6rem;
       color: #e5e7eb;
     }
+
     .subtitle {
       font-size: 0.85rem;
       color: #9ca3af;
       margin-bottom: 18px;
     }
+
     .badge {
       display: inline-flex;
       align-items: center;
@@ -37,17 +50,20 @@
       border: 1px solid #0f766e55;
       margin-bottom: 12px;
     }
+
     .badge span.icon {
       width: 7px;
       height: 7px;
       border-radius: 999px;
       background: #22c55e;
     }
+
     .input-row {
       display: flex;
       gap: 8px;
       margin-bottom: 14px;
     }
+
     .input-row input {
       flex: 1;
       padding: 10px 12px;
@@ -58,10 +74,12 @@
       outline: none;
       font-size: 0.95rem;
     }
+
     .input-row input:focus {
       border-color: #38bdf8;
       box-shadow: 0 0 0 1px #38bdf833;
     }
+
     .btn {
       border-radius: 999px;
       border: none;
@@ -75,20 +93,19 @@
       gap: 6px;
       transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.2s;
     }
+
     .btn-primary {
       background: linear-gradient(135deg, #0ea5e9, #22c55e);
       color: #0b1120;
       box-shadow: 0 12px 25px rgba(34, 197, 94, 0.4);
       white-space: nowrap;
     }
-    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 16px 32px rgba(34, 197, 94, 0.55); }
-    .btn-ghost {
-      background: transparent;
-      color: #9ca3af;
-      padding: 6px 10px;
-      font-size: 0.75rem;
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 32px rgba(34, 197, 94, 0.55);
     }
-    .btn-ghost:hover { background: #020617; color: #e5e7eb; }
+
     .tasks-header {
       display: flex;
       justify-content: space-between;
@@ -97,10 +114,12 @@
       font-size: 0.8rem;
       color: #9ca3af;
     }
+
     .counter {
       font-size: 0.8rem;
       color: #a5b4fc;
     }
+
     ul.tasks {
       list-style: none;
       padding: 0;
@@ -108,6 +127,7 @@
       max-height: 340px;
       overflow-y: auto;
     }
+
     .task {
       display: flex;
       align-items: center;
@@ -118,57 +138,67 @@
       border-radius: 12px;
       border: 1px solid #1f2937;
     }
+
     .task-main {
       display: flex;
       align-items: center;
       gap: 8px;
     }
+
     .task input[type="checkbox"] {
       width: 16px;
       height: 16px;
     }
+
     .task-text {
       font-size: 0.9rem;
       color: #e5e7eb;
     }
+
     .task-text.completed {
       text-decoration: line-through;
       color: #6b7280;
     }
+
     .task-actions {
       display: flex;
       gap: 4px;
     }
-    .task-actions button {
-      border-radius: 999px;
-      border: none;
-      font-size: 0.7rem;
-      padding: 5px 9px;
-      cursor: pointer;
-    }
+
     .btn-small-solid {
       background: #0ea5e9;
       color: #0b1120;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 0.7rem;
     }
+
     .btn-small-ghost {
       background: transparent;
       color: #9ca3af;
       border: 1px solid #1f2937;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 0.7rem;
     }
+
     .status-bar {
       margin-top: 8px;
       font-size: 0.75rem;
       color: #9ca3af;
       min-height: 18px;
     }
+
     .status-bar.ok { color: #4ade80; }
     .status-bar.error { color: #f97373; }
+
     @media (max-width: 480px) {
       .app-container { padding: 18px 14px 22px; }
       h1 { font-size: 1.3rem; }
     }
   </style>
 </head>
+
 <body>
   <div class="app-container">
     <div class="badge">
@@ -182,10 +212,8 @@
     </div>
 
     <div class="input-row">
-      <input id="taskInput" type="text" placeholder="Escribe una nueva tarea...">
-      <button class="btn btn-primary" id="addBtn">
-        ➕ Agregar
-      </button>
+      <input id="taskInput" type="text" placeholder="Escribe una nueva tarea..." />
+      <button class="btn btn-primary" id="addBtn">➕ Agregar</button>
     </div>
 
     <div class="tasks-header">
@@ -194,155 +222,152 @@
     </div>
 
     <ul class="tasks" id="tasksList"></ul>
-
     <div class="status-bar" id="statusBar"></div>
   </div>
 
   <script>
-  const API_URL = "https://todo-api-david.onrender.com";
+    const API_URL = "https://todo-api-david.onrender.com";
 
-  const taskInput = document.getElementById('taskInput');
-  const addBtn = document.getElementById('addBtn');
-  const tasksList = document.getElementById('tasksList');
-  const counter = document.getElementById('counter');
-  const statusBar = document.getElementById('statusBar');
+    const taskInput = document.getElementById("taskInput");
+    const addBtn = document.getElementById("addBtn");
+    const tasksList = document.getElementById("tasksList");
+    const counter = document.getElementById("counter");
+    const statusBar = document.getElementById("statusBar");
 
-  function setStatus(msg, type = '') {
-    statusBar.textContent = msg || '';
-    statusBar.className = 'status-bar ' + (type || '');
-  }
-
-  // 🚀 GET /tasks
-  async function loadTasks() {
-    try {
-      const res = await fetch(`${API_URL}/tasks`);
-      const data = await res.json();
-      renderTasks(data);
-      setStatus('Conectado al servicio /tasks', 'ok');
-    } catch (err) {
-      console.error(err);
-      setStatus('Error cargando tareas (revisa la API en Render)', 'error');
+    function setStatus(msg, type = "") {
+      statusBar.textContent = msg || "";
+      statusBar.className = "status-bar " + (type || "");
     }
-  }
 
-  function renderTasks(tasks) {
-    tasksList.innerHTML = '';
+    // 🚀 GET /tasks
+    async function loadTasks() {
+      try {
+        const res = await fetch(`${API_URL}/tasks`);
+        const data = await res.json();
+        renderTasks(data);
+        setStatus("Conectado al servicio /tasks", "ok");
+      } catch (err) {
+        console.error(err);
+        setStatus("Error cargando tareas (revisa la API en Render)", "error");
+      }
+    }
 
-    tasks.forEach(task => {
-      const li = document.createElement('li');
-      li.className = 'task';
+    function renderTasks(tasks) {
+      tasksList.innerHTML = "";
 
-      const main = document.createElement('div');
-      main.className = 'task-main';
+      tasks.forEach(task => {
+        const li = document.createElement("li");
+        li.className = "task";
 
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.checked = !!task.completed;
-      checkbox.addEventListener('change', () =>
-        toggleTask(task.id, !task.completed, task.text)
-      );
+        const main = document.createElement("div");
+        main.className = "task-main";
 
-      const text = document.createElement('span');
-      text.className = 'task-text' + (task.completed ? ' completed' : '');
-      text.textContent = task.text;
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = !!task.completed;
+        checkbox.addEventListener("change", () =>
+          toggleTask(task.id, !task.completed, task.text)
+        );
 
-      main.appendChild(checkbox);
-      main.appendChild(text);
+        const text = document.createElement("span");
+        text.className = "task-text" + (task.completed ? " completed" : "");
+        text.textContent = task.text;
 
-      const actions = document.createElement('div');
-      actions.className = 'task-actions';
+        main.appendChild(checkbox);
+        main.appendChild(text);
 
-      const btnToggle = document.createElement('button');
-      btnToggle.className = 'btn-small-solid';
-      btnToggle.textContent = task.completed ? 'Desmarcar' : 'Completar';
-      btnToggle.addEventListener('click', () =>
-        toggleTask(task.id, !task.completed, task.text)
-      );
+        const actions = document.createElement("div");
+        actions.className = "task-actions";
 
-      const btnDelete = document.createElement('button');
-      btnDelete.className = 'btn-small-ghost';
-      btnDelete.textContent = 'Eliminar';
-      btnDelete.addEventListener('click', () => deleteTask(task.id));
+        const btnToggle = document.createElement("button");
+        btnToggle.className = "btn-small-solid";
+        btnToggle.textContent = task.completed ? "Desmarcar" : "Completar";
+        btnToggle.addEventListener("click", () =>
+          toggleTask(task.id, !task.completed, task.text)
+        );
 
-      actions.appendChild(btnToggle);
-      actions.appendChild(btnDelete);
+        const btnDelete = document.createElement("button");
+        btnDelete.className = "btn-small-ghost";
+        btnDelete.textContent = "Eliminar";
+        btnDelete.addEventListener("click", () => deleteTask(task.id));
 
-      li.appendChild(main);
-      li.appendChild(actions);
-      tasksList.appendChild(li);
+        actions.appendChild(btnToggle);
+        actions.appendChild(btnDelete);
+
+        li.appendChild(main);
+        li.appendChild(actions);
+        tasksList.appendChild(li);
+      });
+
+      counter.textContent = tasks.length === 1 ? "1 tarea" : `${tasks.length} tareas`;
+    }
+
+    // 🚀 POST /tasks
+    async function addTask() {
+      const text = taskInput.value.trim();
+      if (!text) return;
+
+      try {
+        const res = await fetch(`${API_URL}/tasks`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, completed: false })
+        });
+
+        if (!res.ok) throw new Error("Error en POST");
+
+        taskInput.value = "";
+        await loadTasks();
+        setStatus("Tarea agregada correctamente", "ok");
+      } catch (err) {
+        console.error(err);
+        setStatus("Error al agregar tarea", "error");
+      }
+    }
+
+    // 🚀 PUT /tasks/:id
+    async function toggleTask(id, completed, text) {
+      try {
+        const res = await fetch(`${API_URL}/tasks/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, completed })
+        });
+
+        if (!res.ok) throw new Error("Error en PUT");
+
+        await loadTasks();
+        setStatus("Tarea actualizada", "ok");
+      } catch (err) {
+        console.error(err);
+        setStatus("Error al actualizar tarea", "error");
+      }
+    }
+
+    // 🚀 DELETE /tasks/:id
+    async function deleteTask(id) {
+      try {
+        const res = await fetch(`${API_URL}/tasks/${id}`, {
+          method: "DELETE"
+        });
+
+        if (!res.ok) throw new Error("Error en DELETE");
+
+        await loadTasks();
+        setStatus("Tarea eliminada", "ok");
+      } catch (err) {
+        console.error(err);
+        setStatus("Error al eliminar tarea", "error");
+      }
+    }
+
+    addBtn.addEventListener("click", addTask);
+    taskInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") addTask();
     });
 
-    counter.textContent =
-      tasks.length === 1 ? '1 tarea' : `${tasks.length} tareas`;
-  }
-
-  // 🚀 POST /tasks
-  async function addTask() {
-    const text = taskInput.value.trim();
-    if (!text) return;
-
-    try {
-      const res = await fetch(`${API_URL}/tasks`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, completed: false })
-      });
-
-      if (!res.ok) throw new Error('Error en POST');
-
-      taskInput.value = '';
-      await loadTasks();
-      setStatus('Tarea agregada correctamente', 'ok');
-    } catch (err) {
-      console.error(err);
-      setStatus('Error al agregar tarea', 'error');
-    }
-  }
-
-  // 🚀 PUT /tasks/:id
-  async function toggleTask(id, completed, text) {
-    try {
-      const res = await fetch(`${API_URL}/tasks/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, completed })
-      });
-
-      if (!res.ok) throw new Error('Error en PUT');
-
-      await loadTasks();
-      setStatus('Tarea actualizada', 'ok');
-    } catch (err) {
-      console.error(err);
-      setStatus('Error al actualizar tarea', 'error');
-    }
-  }
-
-  // 🚀 DELETE /tasks/:id
-  async function deleteTask(id) {
-    try {
-      const res = await fetch(`${API_URL}/tasks/${id}`, {
-        method: 'DELETE'
-      });
-
-      if (!res.ok) throw new Error('Error en DELETE');
-
-      await loadTasks();
-      setStatus('Tarea eliminada', 'ok');
-    } catch (err) {
-      console.error(err);
-      setStatus('Error al eliminar tarea', 'error');
-    }
-  }
-
-  addBtn.addEventListener('click', addTask);
-  taskInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') addTask();
-  });
-
-  loadTasks();
-</script>
-
-    
+    loadTasks();
+  </script>
 </body>
 </html>
+
