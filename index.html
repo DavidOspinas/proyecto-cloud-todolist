@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Proyecto Cloud – Lista de tareas</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #020617;
+      border-radius: 16px;
+      padding: 24px 28px;
+      max-width: 600px;
+      border: 1px solid #1f2937;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.8);
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.6rem;
+    }
+    p { font-size: 0.95rem; line-height: 1.5; }
+    code {
+      background: #020617;
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid #1f2937;
+      font-size: 0.85rem;
+    }
+    ul { margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Proyecto Cloud – To-Do List</h1>
+    <p>
+      Esta es la página web del proyecto de <strong>lista de tareas</strong> desplegada en un
+      entorno tipo nube:
+    </p>
+    <ul>
+      <li>Backend en <strong>Node.js + Express</strong></li>
+      <li>Base de datos <strong>SQLite</strong></li>
+      <li>Aplicación empacada en <strong>contenedores Docker</strong></li>
+      <li>Balanceo de carga con <strong>HAProxy</strong> (VM Balanceador)</li>
+      <li>Servicios REST disponibles en <code>/tasks</code></li>
+    </ul>
+    <p>
+      Puedes probar los servicios desde Postman o el navegador usando:<br>
+      <code>GET http://192.168.1.63/tasks</code> (a través del balanceador)<br>
+      <code>GET http://192.168.1.62:3000/tasks</code> (instancia directa)
+    </p>
+    <p style="font-size:0.8rem; color:#9ca3af;">
+      * Esta página se sirve desde el mismo backend que expone la API, corriendo en Docker
+      detrás de HAProxy.
+    </p>
+  </div>
+</body>
+</html>
+

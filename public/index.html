@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>To-Do List – Proyecto Cloud</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { margin: 0; background: #0f172a; color: #e5e7eb; display: flex; justify-content: center; padding: 40px 16px; }
+    .app-container {
+      width: 100%;
+      max-width: 600px;
+      background: #020617;
+      border-radius: 18px;
+      padding: 24px 20px 28px;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.8);
+      border: 1px solid #1e293b;
+    }
+    h1 {
+      margin: 0 0 4px;
+      font-size: 1.6rem;
+      color: #e5e7eb;
+    }
+    .subtitle {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-bottom: 18px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #0f766e22;
+      color: #6ee7b7;
+      border: 1px solid #0f766e55;
+      margin-bottom: 12px;
+    }
+    .badge span.icon {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .input-row input {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #e5e7eb;
+      outline: none;
+      font-size: 0.95rem;
+    }
+    .input-row input:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 1px #38bdf833;
+    }
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9, #22c55e);
+      color: #0b1120;
+      box-shadow: 0 12px 25px rgba(34, 197, 94, 0.4);
+      white-space: nowrap;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 16px 32px rgba(34, 197, 94, 0.55); }
+    .btn-ghost {
+      background: transparent;
+      color: #9ca3af;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+    }
+    .btn-ghost:hover { background: #020617; color: #e5e7eb; }
+    .tasks-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 6px 2px 6px;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+    .counter {
+      font-size: 0.8rem;
+      color: #a5b4fc;
+    }
+    ul.tasks {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 340px;
+      overflow-y: auto;
+    }
+    .task {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      background: #020617;
+      border-radius: 12px;
+      border: 1px solid #1f2937;
+    }
+    .task-main {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .task input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+    }
+    .task-text {
+      font-size: 0.9rem;
+      color: #e5e7eb;
+    }
+    .task-text.completed {
+      text-decoration: line-through;
+      color: #6b7280;
+    }
+    .task-actions {
+      display: flex;
+      gap: 4px;
+    }
+    .task-actions button {
+      border-radius: 999px;
+      border: none;
+      font-size: 0.7rem;
+      padding: 5px 9px;
+      cursor: pointer;
+    }
+    .btn-small-solid {
+      background: #0ea5e9;
+      color: #0b1120;
+    }
+    .btn-small-ghost {
+      background: transparent;
+      color: #9ca3af;
+      border: 1px solid #1f2937;
+    }
+    .status-bar {
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: #9ca3af;
+      min-height: 18px;
+    }
+    .status-bar.ok { color: #4ade80; }
+    .status-bar.error { color: #f97373; }
+    @media (max-width: 480px) {
+      .app-container { padding: 18px 14px 22px; }
+      h1 { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="badge">
+      <span class="icon"></span>
+      Cluster web con balanceador (HAProxy + Docker)
+    </div>
+
+    <h1>Lista de tareas</h1>
+    <div class="subtitle">
+      API detrás del balanceador. Cada acción se envía a <code>/tasks</code>.
+    </div>
+
+    <div class="input-row">
+      <input id="taskInput" type="text" placeholder="Escribe una nueva tarea...">
+      <button class="btn btn-primary" id="addBtn">
+        ➕ Agregar
+      </button>
+    </div>
+
+    <div class="tasks-header">
+      <span>Mis tareas</span>
+      <span class="counter" id="counter">0 tareas</span>
+    </div>
+
+    <ul class="tasks" id="tasksList"></ul>
+
+    <div class="status-bar" id="statusBar"></div>
+  </div>
+
+  <script>
+    // Como esta página se sirve desde el mismo servidor / balanceador,
+    // basta con usar rutas relativas:
+    const API_URL = '/tasks';
+
+    const taskInput = document.getElementById('taskInput');
+    const addBtn = document.getElementById('addBtn');
+    const tasksList = document.getElementById('tasksList');
+    const counter = document.getElementById('counter');
+    const statusBar = document.getElementById('statusBar');
+
+    function setStatus(msg, type = '') {
+      statusBar.textContent = msg || '';
+      statusBar.className = 'status-bar ' + (type || '');
+    }
+
+    async function loadTasks() {
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        renderTasks(data);
+        setStatus(`Conectado al servicio /tasks`, 'ok');
+      } catch (err) {
+        console.error(err);
+        setStatus('Error cargando tareas (revisa el balanceador / contenedores)', 'error');
+      }
+    }
+
+    function renderTasks(tasks) {
+      tasksList.innerHTML = '';
+      tasks.forEach(task => {
+        const li = document.createElement('li');
+        li.className = 'task';
+
+        const main = document.createElement('div');
+        main.className = 'task-main';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = !!task.completed;
+        checkbox.addEventListener('change', () => toggleTask(task.id, !task.completed));
+
+        const text = document.createElement('span');
+        text.className = 'task-text' + (task.completed ? ' completed' : '');
+        text.textContent = task.text;
+
+        main.appendChild(checkbox);
+        main.appendChild(text);
+
+        const actions = document.createElement('div');
+        actions.className = 'task-actions';
+
+        const btnToggle = document.createElement('button');
+        btnToggle.className = 'btn-small-solid';
+        btnToggle.textContent = task.completed ? 'Desmarcar' : 'Completar';
+        btnToggle.addEventListener('click', () => toggleTask(task.id, !task.completed));
+
+        const btnDelete = document.createElement('button');
+        btnDelete.className = 'btn-small-ghost';
+        btnDelete.textContent = 'Eliminar';
+        btnDelete.addEventListener('click', () => deleteTask(task.id));
+
+        actions.appendChild(btnToggle);
+        actions.appendChild(btnDelete);
+
+        li.appendChild(main);
+        li.appendChild(actions);
+        tasksList.appendChild(li);
+      });
+
+      counter.textContent = tasks.length === 1 ? '1 tarea' : `${tasks.length} tareas`;
+    }
+
+    async function addTask() {
+      const text = taskInput.value.trim();
+      if (!text) return;
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, completed: false })
+        });
+        if (!res.ok) throw new Error('Error en POST');
+        taskInput.value = '';
+        await loadTasks();
+        setStatus('Tarea agregada correctamente', 'ok');
+      } catch (err) {
+        console.error(err);
+        setStatus('Error al agregar tarea', 'error');
+      }
+    }
+
+    async function toggleTask(id, completed) {
+      try {
+        const res = await fetch(`${API_URL}/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: 'placeholder', completed })
+        });
+        // Para no complicarnos, recargamos siempre la lista desde el servidor
+        await loadTasks();
+        setStatus('Tarea actualizada', 'ok');
+      } catch (err) {
+        console.error(err);
+        setStatus('Error al actualizar tarea', 'error');
+      }
+    }
+
+    async function deleteTask(id) {
+      try {
+        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        await loadTasks();
+        setStatus('Tarea eliminada', 'ok');
+      } catch (err) {
+        console.error(err);
+        setStatus('Error al eliminar tarea', 'error');
+      }
+    }
+
+    addBtn.addEventListener('click', addTask);
+    taskInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') addTask();
+    });
+
+    loadTasks();
+  </script>
+</body>
+</html>
+
