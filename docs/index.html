@@ -199,130 +199,150 @@
   </div>
 
   <script>
-    // Como esta página se sirve desde el mismo servidor / balanceador,
-    // basta con usar rutas relativas:
-    const API_URL = "https://todo-api-david.onrender.com";
+  const API_URL = "https://todo-api-david.onrender.com";
 
-    const taskInput = document.getElementById('taskInput');
-    const addBtn = document.getElementById('addBtn');
-    const tasksList = document.getElementById('tasksList');
-    const counter = document.getElementById('counter');
-    const statusBar = document.getElementById('statusBar');
+  const taskInput = document.getElementById('taskInput');
+  const addBtn = document.getElementById('addBtn');
+  const tasksList = document.getElementById('tasksList');
+  const counter = document.getElementById('counter');
+  const statusBar = document.getElementById('statusBar');
 
-    function setStatus(msg, type = '') {
-      statusBar.textContent = msg || '';
-      statusBar.className = 'status-bar ' + (type || '');
+  function setStatus(msg, type = '') {
+    statusBar.textContent = msg || '';
+    statusBar.className = 'status-bar ' + (type || '');
+  }
+
+  // 🚀 GET /tasks
+  async function loadTasks() {
+    try {
+      const res = await fetch(`${API_URL}/tasks`);
+      const data = await res.json();
+      renderTasks(data);
+      setStatus('Conectado al servicio /tasks', 'ok');
+    } catch (err) {
+      console.error(err);
+      setStatus('Error cargando tareas (revisa la API en Render)', 'error');
     }
+  }
 
-    async function loadTasks() {
-      try {
-        const res = await fetch(API_URL);
-        const data = await res.json();
-        renderTasks(data);
-        setStatus(`Conectado al servicio /tasks`, 'ok');
-      } catch (err) {
-        console.error(err);
-        setStatus('Error cargando tareas (revisa el balanceador / contenedores)', 'error');
-      }
-    }
+  function renderTasks(tasks) {
+    tasksList.innerHTML = '';
 
-    function renderTasks(tasks) {
-      tasksList.innerHTML = '';
-      tasks.forEach(task => {
-        const li = document.createElement('li');
-        li.className = 'task';
+    tasks.forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'task';
 
-        const main = document.createElement('div');
-        main.className = 'task-main';
+      const main = document.createElement('div');
+      main.className = 'task-main';
 
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.checked = !!task.completed;
-        checkbox.addEventListener('change', () => toggleTask(task.id, !task.completed));
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = !!task.completed;
+      checkbox.addEventListener('change', () =>
+        toggleTask(task.id, !task.completed, task.text)
+      );
 
-        const text = document.createElement('span');
-        text.className = 'task-text' + (task.completed ? ' completed' : '');
-        text.textContent = task.text;
+      const text = document.createElement('span');
+      text.className = 'task-text' + (task.completed ? ' completed' : '');
+      text.textContent = task.text;
 
-        main.appendChild(checkbox);
-        main.appendChild(text);
+      main.appendChild(checkbox);
+      main.appendChild(text);
 
-        const actions = document.createElement('div');
-        actions.className = 'task-actions';
+      const actions = document.createElement('div');
+      actions.className = 'task-actions';
 
-        const btnToggle = document.createElement('button');
-        btnToggle.className = 'btn-small-solid';
-        btnToggle.textContent = task.completed ? 'Desmarcar' : 'Completar';
-        btnToggle.addEventListener('click', () => toggleTask(task.id, !task.completed));
+      const btnToggle = document.createElement('button');
+      btnToggle.className = 'btn-small-solid';
+      btnToggle.textContent = task.completed ? 'Desmarcar' : 'Completar';
+      btnToggle.addEventListener('click', () =>
+        toggleTask(task.id, !task.completed, task.text)
+      );
 
-        const btnDelete = document.createElement('button');
-        btnDelete.className = 'btn-small-ghost';
-        btnDelete.textContent = 'Eliminar';
-        btnDelete.addEventListener('click', () => deleteTask(task.id));
+      const btnDelete = document.createElement('button');
+      btnDelete.className = 'btn-small-ghost';
+      btnDelete.textContent = 'Eliminar';
+      btnDelete.addEventListener('click', () => deleteTask(task.id));
 
-        actions.appendChild(btnToggle);
-        actions.appendChild(btnDelete);
+      actions.appendChild(btnToggle);
+      actions.appendChild(btnDelete);
 
-        li.appendChild(main);
-        li.appendChild(actions);
-        tasksList.appendChild(li);
-      });
-
-      counter.textContent = tasks.length === 1 ? '1 tarea' : `${tasks.length} tareas`;
-    }
-
-    async function addTask() {
-      const text = taskInput.value.trim();
-      if (!text) return;
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text, completed: false })
-        });
-        if (!res.ok) throw new Error('Error en POST');
-        taskInput.value = '';
-        await loadTasks();
-        setStatus('Tarea agregada correctamente', 'ok');
-      } catch (err) {
-        console.error(err);
-        setStatus('Error al agregar tarea', 'error');
-      }
-    }
-
-    async function toggleTask(id, completed) {
-      try {
-        const res = await fetch(`${API_URL}/${id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: 'placeholder', completed })
-        });
-        // Para no complicarnos, recargamos siempre la lista desde el servidor
-        await loadTasks();
-        setStatus('Tarea actualizada', 'ok');
-      } catch (err) {
-        console.error(err);
-        setStatus('Error al actualizar tarea', 'error');
-      }
-    }
-
-    async function deleteTask(id) {
-      try {
-        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-        await loadTasks();
-        setStatus('Tarea eliminada', 'ok');
-      } catch (err) {
-        console.error(err);
-        setStatus('Error al eliminar tarea', 'error');
-      }
-    }
-
-    addBtn.addEventListener('click', addTask);
-    taskInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') addTask();
+      li.appendChild(main);
+      li.appendChild(actions);
+      tasksList.appendChild(li);
     });
 
-    loadTasks();
-  </script>
+    counter.textContent =
+      tasks.length === 1 ? '1 tarea' : `${tasks.length} tareas`;
+  }
+
+  // 🚀 POST /tasks
+  async function addTask() {
+    const text = taskInput.value.trim();
+    if (!text) return;
+
+    try {
+      const res = await fetch(`${API_URL}/tasks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, completed: false })
+      });
+
+      if (!res.ok) throw new Error('Error en POST');
+
+      taskInput.value = '';
+      await loadTasks();
+      setStatus('Tarea agregada correctamente', 'ok');
+    } catch (err) {
+      console.error(err);
+      setStatus('Error al agregar tarea', 'error');
+    }
+  }
+
+  // 🚀 PUT /tasks/:id
+  async function toggleTask(id, completed, text) {
+    try {
+      const res = await fetch(`${API_URL}/tasks/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, completed })
+      });
+
+      if (!res.ok) throw new Error('Error en PUT');
+
+      await loadTasks();
+      setStatus('Tarea actualizada', 'ok');
+    } catch (err) {
+      console.error(err);
+      setStatus('Error al actualizar tarea', 'error');
+    }
+  }
+
+  // 🚀 DELETE /tasks/:id
+  async function deleteTask(id) {
+    try {
+      const res = await fetch(`${API_URL}/tasks/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (!res.ok) throw new Error('Error en DELETE');
+
+      await loadTasks();
+      setStatus('Tarea eliminada', 'ok');
+    } catch (err) {
+      console.error(err);
+      setStatus('Error al eliminar tarea', 'error');
+    }
+  }
+
+  addBtn.addEventListener('click', addTask);
+  taskInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') addTask();
+  });
+
+  loadTasks();
+</script>
+
+    
 </body>
 </html>
